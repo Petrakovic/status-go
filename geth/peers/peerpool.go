@@ -154,6 +154,9 @@ func (p *PeerPool) handleServerPeers(server *p2p.Server, events <-chan *p2p.Peer
 			case p2p.PeerEventTypeAdd:
 				log.Debug("confirm peer added", "ID", event.Peer)
 				if p.stopOnMax && p.handleAddedPeer(server, event.Peer) {
+					if server.DiscV5 == nil {
+						continue
+					}
 					log.Debug("closing discv5 connection", "server", server.Self())
 					server.DiscV5.Close()
 					server.DiscV5 = nil
